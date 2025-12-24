@@ -29,7 +29,7 @@ function loadEnv($path) {
 }
 
 // Load .env
-loadEnv(__DIR__ . '/.env');
+loadEnv(__DIR__ . '/config.env');
 
 // Resolve Config Path
 // Priority: System Env > .env > Default
