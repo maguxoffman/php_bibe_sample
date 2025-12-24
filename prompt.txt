@@ -29,4 +29,5 @@
 
 
 
-16. "보안"이라는 느낌나는 favicon.ico 이미지 만들어 넣어줘
+
+17. favicon.png 화일이름을 favicon.ico로 바꿔줘
