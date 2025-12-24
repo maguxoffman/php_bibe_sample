@@ -35,3 +35,5 @@
 18. "transaction_logging" 항복은  a,s,o 만 설정할수 있게 해줘 
 
 19. "x_forwarded_for" 항목은 yes,no 만 설정하도록 해줘
+
+20. transaction_logging,  x_forwarded_for 항목 combo box 형태로 바꾸어줘

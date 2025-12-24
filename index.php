@@ -105,6 +105,13 @@ if (file_exists($configFile)) {
             border-color: #14b8a6;
             box-shadow: 0 0 0 1px #14b8a6;
         }
+        .fintech-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/xml' fill='none' viewBox='0 0 20 20' stroke='%2314b8a6' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 8l4 4 4-4' /%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
     </style>
 </head>
 <body class="min-h-screen p-8 font-sans">
@@ -166,7 +173,7 @@ if (file_exists($configFile)) {
                                     <?php if ($item['key'] === 'transaction_logging'): ?>
                                         <select id="<?= htmlspecialchars($item['key']) ?>" 
                                                 name="<?= htmlspecialchars($item['key']) ?>" 
-                                                class="fintech-input appearance-none cursor-pointer">
+                                                class="fintech-input fintech-select appearance-none cursor-pointer">
                                             <?php foreach (['a' => 'All (a)', 's' => 'Short (s)', 'o' => 'Off (o)'] as $val => $label): ?>
                                                 <option value="<?= $val ?>" <?= $item['value'] === $val ? 'selected' : '' ?>>
                                                     <?= htmlspecialchars($label) ?>
@@ -176,7 +183,7 @@ if (file_exists($configFile)) {
                                     <?php elseif ($item['key'] === 'x_forwarded_for'): ?>
                                         <select id="<?= htmlspecialchars($item['key']) ?>" 
                                                 name="<?= htmlspecialchars($item['key']) ?>" 
-                                                class="fintech-input appearance-none cursor-pointer">
+                                                class="fintech-input fintech-select appearance-none cursor-pointer">
                                             <?php foreach (['yes' => 'Yes', 'no' => 'No'] as $val => $label): ?>
                                                 <option value="<?= $val ?>" <?= $item['value'] === $val ? 'selected' : '' ?>>
                                                     <?= htmlspecialchars($label) ?>
