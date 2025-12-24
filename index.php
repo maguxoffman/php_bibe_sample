@@ -9,28 +9,32 @@ if (file_exists($configFile)) {
     foreach ($lines as $line) {
         $trimmed = trim($line);
         
-        // Accumulate comments
-        if (str_starts_with($trimmed, '#') || str_starts_with($trimmed, ';')) {
-            // Clean up comment starter for display
-            $cleanComment = preg_replace('/^[#;]\s*/', '', $trimmed);
-            if ($currentComment !== "") {
-                $currentComment .= "<br>" . htmlspecialchars($cleanComment);
-            } else {
-                $currentComment = htmlspecialchars($cleanComment);
-            }
-        } 
         // If active config
-        elseif (preg_match('/^([^#;][^=]*?)\s*=\s*(.*)$/', $line, $matches)) {
+        if (preg_match('/^([^#;][^=]*?)\s*=\s*(.*)$/', $line, $matches)) {
             $key = trim($matches[1]);
             $value = trim($matches[2]);
             $configContent[] = [
                 'type' => 'config',
+                'status' => 'active',
                 'key' => $key,
                 'value' => $value,
                 'description' => $currentComment
             ];
-            $currentComment = ""; // Reset comment after associating
+            $currentComment = ""; 
         } 
+        // If commented out config (starts with # or ;, contains =)
+        elseif (preg_match('/^[#;]\s*([^=\s]+)\s*=(.*)$/', $trimmed, $matches)) {
+            $key = trim($matches[1]);
+            $value = trim($matches[2]);
+            $configContent[] = [
+                'type' => 'config',
+                'status' => 'inactive',
+                'key' => $key,
+                'value' => $value,
+                'description' => $currentComment
+            ];
+            $currentComment = "";
+        }
         // If section header [SECTION]
         elseif (preg_match('/^\[(.*)\]$/', $trimmed, $matches)) {
             $configContent[] = [
@@ -39,10 +43,16 @@ if (file_exists($configFile)) {
             ];
             $currentComment = "";
         }
+        // Normal comment (no =)
+        elseif (str_starts_with($trimmed, '#') || str_starts_with($trimmed, ';')) {
+            $cleanComment = preg_replace('/^[#;]\s*/', '', $trimmed);
+            if ($currentComment !== "") {
+                $currentComment .= "<br>" . htmlspecialchars($cleanComment);
+            } else {
+                $currentComment = htmlspecialchars($cleanComment);
+            }
+        }
         elseif ($trimmed === "") {
-             // Empty line, reset comment association usually? 
-             // Or keep it for next block? 
-             // Let's reset to avoid comments jumping too far.
              $currentComment = "";
         }
     }
@@ -67,7 +77,7 @@ if (file_exists($configFile)) {
                             bg: '#0a0a0a',
                             card: '#171717',
                             text: '#ededed',
-                            accent: '#22c55e',
+                            accent: '#14b8a6', // Teal-500
                             hover: '#1f1f1f' // Slightly lighter for hover
                         }
                     }
@@ -91,8 +101,8 @@ if (file_exists($configFile)) {
         }
         .fintech-input:focus {
             outline: none;
-            border-color: #22c55e;
-            box-shadow: 0 0 0 1px #22c55e;
+            border-color: #14b8a6;
+            box-shadow: 0 0 0 1px #14b8a6;
         }
     </style>
 </head>
@@ -122,7 +132,14 @@ if (file_exists($configFile)) {
             
             <form action="save_config.php" method="POST" class="space-y-4">
                 
-                <?php foreach ($configContent as $item): ?>
+                <?php 
+                // Separate active and inactive
+                $activeItems = array_filter($configContent, fn($i) => !isset($i['status']) || $i['status'] === 'active');
+                $inactiveItems = array_filter($configContent, fn($i) => isset($i['status']) && $i['status'] === 'inactive');
+                ?>
+
+                <!-- Active Configuration -->
+                <?php foreach ($activeItems as $item): ?>
                     
                     <?php if ($item['type'] === 'header'): ?>
                         <div class="pt-6 pb-2">
@@ -158,10 +175,43 @@ if (file_exists($configFile)) {
                     
                 <?php endforeach; ?>
 
+                <?php if (!empty($inactiveItems)): ?>
+                    <div class="mt-12 pt-8 border-t border-gray-800">
+                        <h3 class="text-2xl font-bold text-gray-400 mb-6">Unused Configuration</h3>
+                        <div class="space-y-4 opacity-75 grayscale-[50%]">
+                            <?php foreach ($inactiveItems as $item): ?>
+                                <div class="bg-fintech-card p-4 rounded-lg border border-gray-800 border-dashed">
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2">
+                                                <span class="px-2 py-0.5 rounded text-xs bg-gray-800 text-gray-500 font-mono">INACTIVE</span>
+                                                <span class="block font-medium text-lg text-gray-400">
+                                                    <?= htmlspecialchars($item['key']) ?>
+                                                </span>
+                                            </div>
+                                            <?php if (!empty($item['description'])): ?>
+                                                <p class="text-gray-600 text-sm mt-1 leading-relaxed">
+                                                    <?= $item['description'] ?>
+                                                </p>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="w-full md:w-1/3">
+                                            <input type="text" 
+                                                   value="<?= htmlspecialchars($item['value']) ?>" 
+                                                   class="fintech-input bg-gray-900/50 text-gray-500 border-gray-800 cursor-not-allowed"
+                                                   readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
                 <div class="fixed bottom-0 left-0 right-0 bg-fintech-card/80 backdrop-blur-md border-t border-gray-800 p-4 md:px-0">
                     <div class="max-w-4xl mx-auto flex justify-end">
                         <button type="submit" 
-                                class="bg-fintech-accent text-black font-bold py-3 px-8 rounded hover:bg-green-400 transition-colors shadow-[0_0_15px_rgba(34,197,94,0.3)]">
+                                class="bg-fintech-accent text-black font-bold py-3 px-8 rounded hover:bg-teal-400 transition-colors shadow-[0_0_15px_rgba(20,184,166,0.3)]">
                             Save Changes
                         </button>
                     </div>
