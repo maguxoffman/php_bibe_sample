@@ -1,0 +1,25 @@
+1. 다음 요구사항에 맞춰 실제 작동하는 xdos.cfg 화일내용을 view 및 수정 할수 있는 웹페이지 만들어줘
+   - PHP 8.x , php-fpm 프로젝트 구조로 생성.
+   - /Data/xdos.cfg 화일에 해당 작업 해줘
+   - 스타일링: Tailwind CSS를 사용하여 'Fintech Dark Mode' (배경: #0a0a0a, 카드: #171717, 텍스트: #ededed, 강조: #22c55e) 적용.
+   - xdos.cfg 의 모든 설정 내용을 보여주고 설정값을 변경 할수 있도록 해줘
+
+2. 수​정 할 xdos.cfg 화일 경로를 환경변수로 따로 빼줘
+
+3. XDOS_CFG_PATH=test_config.cfg php 를 환경 변수 화일에서 읽어서 오도록 해줘
+
+4. 수정된 내용을 가지고 다시테스트 해줘
+
+5. 작업하는 페이지에 수정되는 화일 절대 경로 보여줘
+
+6. 수정되는 화일이 .env 화일에 XDOS_CFG_PATH 값이 되도록 바꾸어줘
+
+7. 해당 소스 commit 해줘
+
+8. commit 저장소 위치는?
+
+9. https://github.com/maguxoffman/php_bibe_sample.git 여기로 원격 저장소 설정해줘
+
+10. 원격 저장소에 잘 commit 되었는지 확인해줘
+
+11. 이제까지 사용한 프롬프트 모두 정리해서 prompt.txt 화일로 정리해서 만들어줘
