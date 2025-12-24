@@ -31,10 +31,17 @@ foreach ($lines as $line) {
         // If this key exists in our POST data, update it
         if (array_key_exists($key, $postData)) {
             $newValue = $postData[$key];
-            // Preserve indentation if any? usually config files are flat but let's be safe.
-            // We'll just write "key = value\n"
-            // Or better: keep original key part, replace value part.
-            // But reconstructing is safer to avoid regex mess on replacement.
+            
+            // Validation
+            if ($key === 'transaction_logging' && !in_array($newValue, ['a', 's', 'o'])) {
+                $newContent .= $line; // Skip update if invalid
+                continue;
+            }
+            if ($key === 'x_forwarded_for' && !in_array($newValue, ['yes', 'no'])) {
+                $newContent .= $line; // Skip update if invalid
+                continue;
+            }
+
             $newContent .= "$key = $newValue\n";
             $updatedKeys[] = $key;
         } else {

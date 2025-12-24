@@ -163,12 +163,34 @@ if (file_exists($configFile)) {
                                     <?php endif; ?>
                                 </div>
                                 <div class="w-full md:w-1/3">
-                                    <input type="text" 
-                                           id="<?= htmlspecialchars($item['key']) ?>" 
-                                           name="<?= htmlspecialchars($item['key']) ?>" 
-                                           value="<?= htmlspecialchars($item['value']) ?>" 
-                                           class="fintech-input"
-                                           spellcheck="false">
+                                    <?php if ($item['key'] === 'transaction_logging'): ?>
+                                        <select id="<?= htmlspecialchars($item['key']) ?>" 
+                                                name="<?= htmlspecialchars($item['key']) ?>" 
+                                                class="fintech-input appearance-none cursor-pointer">
+                                            <?php foreach (['a' => 'All (a)', 's' => 'Short (s)', 'o' => 'Off (o)'] as $val => $label): ?>
+                                                <option value="<?= $val ?>" <?= $item['value'] === $val ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($label) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    <?php elseif ($item['key'] === 'x_forwarded_for'): ?>
+                                        <select id="<?= htmlspecialchars($item['key']) ?>" 
+                                                name="<?= htmlspecialchars($item['key']) ?>" 
+                                                class="fintech-input appearance-none cursor-pointer">
+                                            <?php foreach (['yes' => 'Yes', 'no' => 'No'] as $val => $label): ?>
+                                                <option value="<?= $val ?>" <?= $item['value'] === $val ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($label) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    <?php else: ?>
+                                        <input type="text" 
+                                               id="<?= htmlspecialchars($item['key']) ?>" 
+                                               name="<?= htmlspecialchars($item['key']) ?>" 
+                                               value="<?= htmlspecialchars($item['value']) ?>" 
+                                               class="fintech-input"
+                                               spellcheck="false">
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

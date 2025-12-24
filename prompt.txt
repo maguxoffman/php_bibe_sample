@@ -31,3 +31,7 @@
 
 
 17. favicon.png 화일이름을 favicon.ico로 바꿔줘
+
+18. "transaction_logging" 항복은  a,s,o 만 설정할수 있게 해줘 
+
+19. "x_forwarded_for" 항목은 yes,no 만 설정하도록 해줘
